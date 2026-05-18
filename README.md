@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# molly-web
 
-## Getting Started
+Discord-authenticated web dashboard for the molly bot. Built with Next.js, Convex, and Tailwind CSS.
 
-First, run the development server:
+## Setup
+
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
+```
+
+### 2. Create a Discord application
+
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Create a new application (this serves as both your OAuth2 app and bot)
+3. Go to **OAuth2** → add redirect: `http://localhost:3000/api/auth/callback`
+4. Go to **Bot** → configure your bot if needed
+
+### 3. Set up Convex
+
+```bash
+npx convex dev
+```
+
+This creates a Convex deployment and outputs `NEXT_PUBLIC_CONVEX_URL`. Paste it into `.env.local`.
+
+### 4. Configure environment variables
+
+Copy the example and fill in the values:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variable | Where to find it |
+|---|---|
+| `DISCORD_CLIENT_ID` | Discord Developer Portal → OAuth2 → Client ID |
+| `DISCORD_CLIENT_SECRET` | Discord Developer Portal → OAuth2 → Client Secret |
+| `DISCORD_REDIRECT_URI` | `http://localhost:3000/api/auth/callback` |
+| `NEXT_PUBLIC_DISCORD_CLIENT_ID` | Same as `DISCORD_CLIENT_ID` (used for bot invite links) |
+| `JWT_SECRET` | Run `openssl rand -base64 32` |
+| `NEXT_PUBLIC_CONVEX_URL` | Output from `npx convex dev` |
+
+### 5. Run the dev server
+
+```bash
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 6. Push Convex schema (after code changes)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx convex dev --once
+```
 
-## Learn More
+## Deploy
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx convex deploy   # deploy Convex functions
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Then deploy the Next.js app to Vercel or any platform that supports Next.js.
