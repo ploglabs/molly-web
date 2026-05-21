@@ -6,7 +6,7 @@ const LINES = [
   `                                         ,,    ,,            `,
   `                                       \`7MM  \`7MM            `,
   `\`\\\\.                                     MM    MM            `,
-  `   \`\\\\:.      \`7MMpMMMb.pMMMb.  ,pW"Wq.    MM      MM \`7M'   \`MF'`,
+  `   \`\\\\:.      \`7MMpMMMb.pMMMb.  ,pW"Wq..  MM    MM \`7M'   \`MF'`,
   `      \`\\\\.      MM    MM    MM 6W'   \`Wb MM    MM   VA   ,V  `,
   `     ,;//'      MM    MM    MM 8M     M8 MM    MM    VA ,V   `,
   `  ,;//'         MM    MM    MM YA.   ,A9 MM    MM     VVV    `,
