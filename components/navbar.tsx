@@ -35,7 +35,7 @@ export async function Navbar() {
           className="text-xl font-bold tracking-tight text-white font-mono flex items-center gap-3"
         >
           <Image
-            src="/logo.jpg"
+            src="/logo.png"
             alt="Molly"
             width={32}
             height={32}
