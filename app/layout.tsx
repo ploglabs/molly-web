@@ -12,9 +12,46 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://molly.chat";
+
 export const metadata: Metadata = {
-  title: "molly",
-  description: "molly chat platform",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "molly — terminal-native Discord chat",
+    template: "%s | molly",
+  },
+  description:
+    "molly is a terminal-native realtime chat platform for Discord. TUI client, web dashboard, and relay server — built for developers.",
+  keywords: ["discord", "terminal", "chat", "tui", "realtime", "developers"],
+  authors: [{ name: "ploglabs" }],
+  creator: "ploglabs",
+  openGraph: {
+    type: "website",
+    siteName: "molly",
+    title: "molly — terminal-native Discord chat",
+    description:
+      "Realtime Discord chat in your terminal. TUI client, web dashboard, and relay server built for developers.",
+    url: baseUrl,
+    images: [
+      {
+        url: "/banner.png",
+        width: 1200,
+        height: 630,
+        alt: "molly — terminal-native Discord chat",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "molly — terminal-native Discord chat",
+    description:
+      "Realtime Discord chat in your terminal. TUI client, web dashboard, and relay server built for developers.",
+    images: ["/banner.png"],
+    creator: "@ploglabs",
+  },
+  other: {
+    "theme-color": "#1a1a1a",
+  },
 };
 
 export default function RootLayout({
