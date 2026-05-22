@@ -1,5 +1,7 @@
 # molly-web
 
+<img src="public/logo.png" alt="molly-web" width="80" align="right">
+
 Discord-authenticated web dashboard for molly. Built with Next.js, Convex, and Tailwind CSS.
 
 ## Run locally
