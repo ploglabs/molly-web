@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/") {
+    return NextResponse.next();
+  }
+
   const cookie = request.cookies.get("molly_session")?.value;
 
   if (!cookie) {
@@ -14,5 +18,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|login|favicon.ico|.*\\.svg$).*)"],
+  matcher: [
+    "/((?!api|_next|login|favicon.ico|apple-touch-icon|.*\\.(?:svg|png|jpg|jpeg|webp|avif|ico|gif)$).*)",
+  ],
 };

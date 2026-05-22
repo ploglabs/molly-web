@@ -1,72 +1,55 @@
-import { getUserById, getSessionToken } from "@/lib/db";
 import { getSessionCookie, verifyToken } from "@/lib/auth/session";
+import { getSessionToken } from "@/lib/db";
 import { fetchUserGuilds, hasAdminAccess } from "@/lib/auth/discord";
-import { Tagline } from "@/components/tagline";
-import { pickRandomTagline } from "@/lib/taglines";
-import { MollyAscii } from "@/components/molly-ascii";
-import { InstallGuide } from "@/components/install-guide";
+import { SetupWizard } from "@/components/setup-wizard";
 
-async function getAdminGuilds(sessionId: string) {
-  try {
-    const accessToken = await getSessionToken(sessionId);
-    if (!accessToken) return [];
-    const guilds = await fetchUserGuilds(accessToken);
-
-    const configuredGuildIds = new Set<string>();
-    try {
-      const RELAY_URL = process.env.RELAY_URL || "http://127.0.0.1:8080";
-      const relayRes = await fetch(`${RELAY_URL}/api/guilds`, {
-        cache: "no-store",
-      });
-      if (relayRes.ok) {
-        const relayData = await relayRes.json();
-        if (Array.isArray(relayData.guilds)) {
-          relayData.guilds.forEach((g: { id: string }) => {
-            configuredGuildIds.add(g.id);
-          });
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch configured guilds from relay:", err);
-    }
-
-    return guilds
-      .filter(hasAdminAccess)
-      .filter((g) => !configuredGuildIds.has(g.id))
-      .map((g) => ({
-        id: g.id,
-        name: g.name,
-        icon: g.icon,
-        owner: g.owner,
-      }));
-  } catch {
-    return [];
-  }
-}
-
-export default async function Home() {
+export default async function SetupPage() {
   const token = await getSessionCookie();
-  let user = null;
-  let guilds: {
-    id: string;
-    name: string;
-    icon: string | null;
-    owner: boolean;
-  }[] = [];
+  let guilds: { id: string; name: string; icon: string | null; owner: boolean }[] = [];
+  let discordId = "";
 
   if (token) {
     const payload = await verifyToken(token);
     if (payload) {
-      user = await getUserById(payload.userId);
-      guilds = await getAdminGuilds(payload.sessionId);
+      discordId = payload.userId;
+      const accessToken = await getSessionToken(payload.sessionId);
+      if (accessToken) {
+        try {
+          const allGuilds = await fetchUserGuilds(accessToken);
+
+          let configuredGuildIds = new Set<string>();
+          try {
+            const RELAY_URL = process.env.RELAY_URL || "http://127.0.0.1:8080";
+            const relayRes = await fetch(`${RELAY_URL}/api/guilds`, { cache: "no-store" });
+            if (relayRes.ok) {
+              const relayData = await relayRes.json();
+              if (Array.isArray(relayData.guilds)) {
+                relayData.guilds.forEach((g: { id: string }) => {
+                  configuredGuildIds.add(g.id);
+                });
+              }
+            }
+          } catch (err) {
+            console.error("Failed to fetch configured guilds from relay:", err);
+          }
+
+          guilds = allGuilds
+            .filter(hasAdminAccess)
+            .filter((g) => !configuredGuildIds.has(g.id))
+            .map((g) => ({
+              id: g.id,
+              name: g.name,
+              icon: g.icon,
+              owner: g.owner,
+            }));
+        } catch {
+          // User may not have guilds scope
+        }
+      }
     }
   }
 
-  // reserved for auth-gated UI
-  void user;
-  void guilds;
-
-  const tagline = pickRandomTagline();
+  const clientId = process.env.DISCORD_CLIENT_ID;
 
   return (
     <main className="flex flex-col md:flex-row min-h-screen md:h-screen w-full md:overflow-hidden bg-[#090909]">
@@ -110,11 +93,11 @@ export default async function Home() {
             <p className="font-mono text-[12.5px] leading-[1.8] text-neutral-400">
               molly is written in go using{" "}
               <span className="text-neutral-300">bubbletea</span> and{" "}
-              <span className="text-neutral-300">lipgloss</span>. it&apos;s open
-              source and we&apos;d love your contributions - whether that&apos;s
-              fixing bugs, adding themes, improving the relay, or just starring
-              the repo. the more people who help build it, the better it gets
-              for everyone.
+              <span className="text-neutral-300">lipgloss</span>. it&apos;s
+              open source and we&apos;d love your contributions - whether
+              that&apos;s fixing bugs, adding themes, improving the relay, or
+              just starring the repo. the more people who help build it, the
+              better it gets for everyone.
             </p>
           </div>
 
@@ -144,32 +127,22 @@ export default async function Home() {
         </p>
       </div>
 
-      {/* ── Right: ASCII art + tagline + CTA ── */}
-      <div className="flex flex-col items-start justify-center flex-1 px-6 py-12 md:px-12 md:py-0 gap-8 order-1 md:order-2 w-full">
-        <MollyAscii />
-
-        <Tagline lines={tagline} />
-
-        {user ? (
-          <InstallGuide />
-        ) : (
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <a
-              href="https://github.com/ploglabs/molly-terminal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-neutral-200 text-neutral-900 px-8 py-2.5 text-xs font-bold font-mono hover:bg-white transition-colors tracking-wider text-center"
-            >
-              VIEW ON GITHUB
-            </a>
-            <a
-              href="/login"
-              className="bg-transparent border border-zinc-700 text-neutral-400 px-8 py-2.5 text-xs font-bold font-mono hover:bg-zinc-800/40 hover:text-neutral-200 transition-colors tracking-wider text-center"
-            >
-              LOGIN
-            </a>
+      {/* ── Right: Setup Wizard ── */}
+      <div className="flex flex-col items-center md:items-start justify-center flex-1 px-6 py-12 md:px-12 md:py-0 gap-8 order-1 md:order-2 w-full overflow-y-auto md:overflow-y-hidden">
+        <div className="flex w-full max-w-lg flex-col gap-6">
+          <div className="text-center md:text-left">
+            <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl font-mono uppercase">
+              Setup Wizard
+            </h1>
+            <p className="mt-2 text-sm text-zinc-400 font-mono">
+              Configure Molly to connect with your Discord server.
+            </p>
           </div>
-        )}
+
+          <div className="w-full">
+            <SetupWizard guilds={guilds} discordId={discordId} clientId={clientId} />
+          </div>
+        </div>
       </div>
     </main>
   );
