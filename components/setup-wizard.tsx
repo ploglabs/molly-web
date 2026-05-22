@@ -91,6 +91,10 @@ export function SetupWizard({
     }
   }, [selectedId]);
 
+  const botInviteUrl = selected && clientId
+    ? `https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=${BOT_PERMISSIONS}&scope=bot&guild_id=${selectedId}`
+    : null;
+
   const checkBot = useCallback(async () => {
     if (!selectedId) return;
     setChecking(true);
@@ -102,7 +106,7 @@ export function SetupWizard({
         setStep("channels");
         fetchChannels();
       } else {
-        setError("Bot not detected yet. Make sure you've invited it using the link above.");
+        setError(`bot_${selectedId}_not_in_guild`);
       }
     } catch {
       setError("Could not reach the relay server. Make sure it's running.");
@@ -282,7 +286,21 @@ export function SetupWizard({
             {error && (
               <div className="border-l-2 border-red-500/50 bg-red-950/10 pl-4 py-2 flex items-start gap-3">
                 <span className="text-red-400 text-xs font-bold">!</span>
-                <p className="text-xs leading-relaxed text-red-400">{error}</p>
+                <div>
+                  <p className="text-xs leading-relaxed text-red-400">
+                    Bot not detected yet. Make sure you have invited it:
+                  </p>
+                  {botInviteUrl && (
+                    <a
+                      href={botInviteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-xs font-bold text-zinc-200 underline hover:text-white transition-colors"
+                    >
+                      INVITE BOT TO {selected.name.toUpperCase()}
+                    </a>
+                  )}
+                </div>
               </div>
             )}
 
