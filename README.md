@@ -45,3 +45,7 @@ npx convex deploy   # deploy Convex functions
 Deploy the Next.js app to Vercel or any Next.js-compatible platform.
 
 Set `NEXT_PUBLIC_BASE_URL` in production to your deployed URL for OG meta tags.
+
+## License
+
+[Apache License 2.0](LICENSE)
