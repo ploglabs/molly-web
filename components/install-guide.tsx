@@ -44,6 +44,12 @@ export function InstallGuide() {
             curl -LO https://github.com/ploglabs/molly-terminal/releases/latest/download/molly_linux_amd64.deb && sudo dpkg -i molly_linux_amd64.deb
           </code>
         </div>
+        <div>
+          <span className="text-[9px] text-zinc-600 block uppercase font-mono mt-1">// FEDORA / RHEL</span>
+          <code className="text-zinc-300 block font-mono text-xs">
+            curl -LO https://github.com/ploglabs/molly-terminal/releases/latest/download/molly_linux_amd64.rpm && sudo dnf install ./molly_linux_amd64.rpm
+          </code>
+        </div>
       </div>
     ),
     windows: (
@@ -98,7 +104,7 @@ export function InstallGuide() {
         </div>
         <button
           onClick={copyToClipboard}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] uppercase tracking-wider text-zinc-500 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 px-2.5 py-1 transition-colors cursor-pointer"
+          className="absolute right-4 top-4 text-[9px] uppercase tracking-wider text-zinc-500 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 px-2.5 py-1 transition-colors cursor-pointer"
         >
           {copied ? "COPIED" : "COPY"}
         </button>
