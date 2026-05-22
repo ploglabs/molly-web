@@ -1,6 +1,8 @@
-# molly-web
+<p align="center">
+  <img src="public/logo.png" alt="molly-web" width="120">
+</p>
 
-<img src="public/logo.png" alt="molly-web" width="80" align="right">
+# molly-web
 
 Discord-authenticated web dashboard for molly. Built with Next.js, Convex, and Tailwind CSS.
 
