@@ -65,6 +65,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-screen bg-[#1a1a1a] text-neutral-200 font-mono">
+        <div className="fixed top-3 left-3 z-50 rounded bg-blue-600 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-white shadow">
+          BETA
+        </div>
         {children}
       </body>
     </html>
