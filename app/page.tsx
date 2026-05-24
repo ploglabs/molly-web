@@ -44,6 +44,21 @@ async function getAdminGuilds(sessionId: string) {
   }
 }
 
+async function getLatestVersion() {
+  try {
+    const res = await fetch("https://api.github.com/repos/ploglabs/molly-terminal/releases/latest", {
+      next: { revalidate: 3600 }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.tag_name;
+    }
+  } catch (err) {
+    console.error("Failed to fetch latest version:", err);
+  }
+  return "v0.2.6"; // fallback
+}
+
 export default async function Home() {
   const token = await getSessionCookie();
   let user = null;
@@ -67,6 +82,7 @@ export default async function Home() {
   void guilds;
 
   const tagline = pickRandomTagline();
+  const latestVersion = await getLatestVersion();
 
   return (
     <main className="flex flex-col md:flex-row min-h-screen md:h-screen w-full md:overflow-hidden bg-[#090909]">
@@ -131,16 +147,19 @@ export default async function Home() {
         </div>
 
         {/* Footer */}
-        <p className="font-mono text-[10px] text-zinc-700 pt-6">
-          © 2026 | made with ❤️ by{" "}
-          <a
-            href="https://github.com/ploglabs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-zinc-500 transition-colors"
-          >
-            Ploglabs
-          </a>
+        <p className="font-mono text-[10px] text-zinc-700 pt-6 flex items-center justify-between">
+          <span>
+            © 2026 | made with ❤️ by{" "}
+            <a
+              href="https://github.com/ploglabs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-zinc-500 transition-colors"
+            >
+              Ploglabs
+            </a>
+          </span>
+          <span>latest: {latestVersion}</span>
         </p>
       </div>
 
