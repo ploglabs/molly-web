@@ -17,7 +17,7 @@ interface Channel {
 
 type Step = "guild" | "invite" | "verify" | "channels" | "done";
 
-const BOT_PERMISSIONS = 8;
+const BOT_PERMISSIONS = 536988672;
 
 function GuildIcon({ guild }: { guild: Guild }) {
   const initials = guild.name

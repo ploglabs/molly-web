@@ -124,7 +124,7 @@ export function InstallGuide() {
         <span className="text-[10px] uppercase tracking-wider text-zinc-500">// GET MOLLY</span>
         <div className="flex items-center gap-4">
           <a
-            href={`https://discord.com/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&permissions=8&integration_type=0&scope=bot+applications.commands`}
+            href={`https://discord.com/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&permissions=536988672&integration_type=0&scope=bot+applications.commands`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[10px] uppercase text-emerald-500 hover:text-emerald-400 transition-colors font-bold"
