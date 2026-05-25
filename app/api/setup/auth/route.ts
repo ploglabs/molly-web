@@ -14,13 +14,20 @@ function getBaseUrl(request: NextRequest): string {
   return url.toString().replace(/\/$/, "");
 }
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const baseUrl = getBaseUrl(request);
-  const token = request.nextUrl.searchParams.get("token");
+  let token = "";
+  try {
+    const body = await request.json();
+    token = body.token;
+  } catch (e) {
+    // Ignore JSON parse error, token will remain empty
+  }
 
   if (!token) {
-    return NextResponse.redirect(
-      new URL("/login?error=missing_token", baseUrl)
+    return NextResponse.json(
+      { error: "missing_token" },
+      { status: 400 }
     );
   }
 
@@ -37,7 +44,7 @@ export async function GET(request: NextRequest) {
       expiresAt
     );
 
-    const res = NextResponse.redirect(new URL("/setup", baseUrl));
+    const res = NextResponse.json({ success: true, redirect: "/setup" });
     res.cookies.set("molly_session", jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -49,8 +56,9 @@ export async function GET(request: NextRequest) {
     return res;
   } catch (e) {
     const message = e instanceof Error ? e.message : "auth_failed";
-    return NextResponse.redirect(
-      new URL(`/login?error=${encodeURIComponent(message)}`, baseUrl)
+    return NextResponse.json(
+      { error: message, redirect: `/login?error=${encodeURIComponent(message)}` },
+      { status: 401 }
     );
   }
 }
